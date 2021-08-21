@@ -39,6 +39,9 @@ dependencies:
   google_sign_in: ^5.0.4
   image_picker: ^0.8.3+2
   firebase_messaging:
+  rxdart: ^0.27.1
+  auto_size_text: ^2.1.0
+
 
 
 dev_dependencies:

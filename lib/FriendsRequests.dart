@@ -61,6 +61,7 @@ class _friendsrequestsState extends State<friendsrequests> {
           String id="0";
           final users = snapshot.data!.docs;
           List<Conversmodel>Coverstions = [];
+          List<String>Ids=[];
           for (var user in users) {
             id=user["id"];
             final String PhotoUrl =user["PhotoUrl"];
@@ -69,18 +70,19 @@ class _friendsrequestsState extends State<friendsrequests> {
             var C = Conversmodel(PhotoUrl, name, id, about);
             if(user["id"]!=loggedinuser.uid) {
               Coverstions.add(C);
+              Ids.add(id);
             }
           }
           return Scaffold(
             appBar: AppBar(
-              backgroundColor:Color(0xFF73AEF5),
+              backgroundColor:const Color(0xFF00796B),
               title: Text("Friends Requests"),
-              leading: Icon(Icons.search),
+              leading: Icon(Icons.person_add_sharp),
               titleSpacing: 2.0,
             ),
-            backgroundColor: Colors.white,
+            backgroundColor: const Color(0xFF00796B),
             floatingActionButton: FloatingActionButton(
-              child: Icon(Icons.home ,color: Colors.blue,),
+              child: Icon(Icons.home ,color: const Color(0xFF00796B),),
               backgroundColor: Colors.white,
               onPressed: () {
                 setState(() {
@@ -88,7 +90,40 @@ class _friendsrequestsState extends State<friendsrequests> {
                 });
               },
             ),
-            body: GridView.builder(
+            body: Stack(
+          children: <Widget>[
+          Container(
+            height: double.infinity,
+            width: double.infinity,
+            decoration: BoxDecoration(
+                gradient: LinearGradient(colors: [
+                  Color(0xFF00897B),
+                  Color(0xFF00796B),
+                  Color(0xFF00694C),
+                  Color(0xFF004D40),
+                ], stops: [0.3, 0.4, 0.7, 0.9]
+                  ,
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                )
+            ),
+          ),
+            Ids.isEmpty?Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                alignment: Alignment.bottomCenter,
+                height:500,
+                width: 500,
+                child: Column(
+                  children: [
+                    Icon(Icons.person_add_sharp,size: 130,color: Colors.white,),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    Text("No Friends Requests",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,fontSize: 21),),
+                  ],
+                ),
+              ) ):GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 1,
                   mainAxisSpacing: 0.9,
@@ -98,6 +133,9 @@ class _friendsrequestsState extends State<friendsrequests> {
                 GestureDetector(
                     child: Card(context, Coverstions[index])),
             ),
+
+        ]
+        )
           );
         }
       },
@@ -132,14 +170,14 @@ class _friendsrequestsState extends State<friendsrequests> {
           SizedBox(width: 12.0,),
           Text("${product1.Username}", style: TextStyle(
               fontSize: 23,
-              color: Colors.black,
+              color: Colors.white,
               fontStyle: FontStyle.italic,
               fontWeight: FontWeight.w600,
               fontFamily: 'Segoe UI'
           ),),
           SizedBox(width: 19.0,),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               SizedBox(
                 height: 50.0,

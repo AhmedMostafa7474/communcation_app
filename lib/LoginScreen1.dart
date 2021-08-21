@@ -30,12 +30,14 @@ class _loginScreenState extends State<loginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var screensize=MediaQuery.of(context).size;
     return Scaffold(
       body: Stack(
         children: <Widget>[
           Container(
             height: double.infinity,
             width: double.infinity,
+            //child: Image.asset("assets/background.png"),
             decoration: BoxDecoration(
                /* gradient: LinearGradient(colors: [
                   Color(0xFF73AEF5),
@@ -47,13 +49,14 @@ class _loginScreenState extends State<loginScreen> {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 )*/
-               color: Colors.blue
+               color:const Color(0xFF00796B) //const Color(0xFF00796B)
             ),
 
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 166),
+            padding: EdgeInsets.only(top: screensize.height*0.2 ),
             child: Container(
+              height: double.infinity,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(100),topRight: Radius.circular(100)),
                   color: Colors.white
@@ -78,24 +81,24 @@ class _loginScreenState extends State<loginScreen> {
                             ,
                             letterSpacing: 1.5
                             ,
-                            color: Colors.blue)),
+                            color: const Color(0xFF00796B))),
                         EmailBox(),
                         PassBox(),
-                        ForgetBox(),
+                       // ForgetBox(),
                         LoginBox(),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween
                           ,
                           children: [
                             SignupBox(),
-                            Row(
-                                children: [
-                                  Facebox(),
-                                  SizedBox(width: 10.0)
-                                  ,
-                                  Googlebox()
-                                ]
-                            )
+                            // Row(
+                            //     children: [
+                            //       Facebox(),
+                            //       SizedBox(width: 10.0)
+                            //       ,
+                            //       Googlebox()
+                            //     ]
+                            //)
                           ],
                         )
                       ],
@@ -151,7 +154,7 @@ class _loginScreenState extends State<loginScreen> {
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30.0)
         ),
-        color: Colors.blue
+        color: const Color(0xFF00796B)
         ,
         child: Text("Login", style: TextStyle(
             fontSize: 18.0,
@@ -161,7 +164,7 @@ class _loginScreenState extends State<loginScreen> {
             ,
             letterSpacing: 1.5
             ,
-            color: Colors.black)),),
+            color: Colors.white)),),
     );
   }
 
@@ -181,7 +184,7 @@ class _loginScreenState extends State<loginScreen> {
               ,
               letterSpacing: 1.5
               ,
-              color: Colors.blue)
+              color: const Color(0xFF00796B))
           )),
     );
   }
@@ -199,7 +202,7 @@ class _loginScreenState extends State<loginScreen> {
           ,
           letterSpacing: 1.5
           ,
-          color: Colors.blue)
+          color: Colors.black87)
       )),
     );
   }
@@ -232,7 +235,7 @@ class _loginScreenState extends State<loginScreen> {
             decoration: InputDecoration(
               border: InputBorder.none,
               contentPadding: EdgeInsets.only(top: 14.0),
-              prefixIcon: Icon(Icons.email, color: Colors.blue
+              prefixIcon: Icon(Icons.email, color: const Color(0xFF00796B)
               ),
               hintText: "Enter your email address",
             ),
@@ -273,7 +276,7 @@ class _loginScreenState extends State<loginScreen> {
             decoration: InputDecoration(
               border: InputBorder.none,
               contentPadding: EdgeInsets.only(top: 14.0),
-              prefixIcon: Icon(Icons.lock, color: Colors.blue),
+              prefixIcon: Icon(Icons.lock, color: const Color(0xFF00796B)),
               hintText: "Enter your Password",
             ),
           ),
@@ -288,7 +291,7 @@ class _loginScreenState extends State<loginScreen> {
         width: 50.0,
         decoration: BoxDecoration(
             shape: BoxShape.circle
-            ,color: Colors.blueAccent
+            ,color: const Color(0xFF00796B)
             ,boxShadow:[ BoxShadow(
             blurRadius: 6.0
             ,color: Colors.black,

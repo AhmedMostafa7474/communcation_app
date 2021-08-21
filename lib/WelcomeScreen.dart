@@ -39,7 +39,7 @@ class _welcomescreenState extends State<welcomescreen> {
     return Scaffold(
     drawer: drawer(context),
       appBar: AppBar(
-        backgroundColor:Color(0xFF73AEF5),
+        backgroundColor:const Color(0xFF00796B),
         title: Text(currentTitle),
         leading: currenticon,
         titleSpacing: 2.0,
@@ -51,10 +51,10 @@ class _welcomescreenState extends State<welcomescreen> {
         width: double.infinity,
         decoration: BoxDecoration(
         gradient: LinearGradient(colors: [
-        Color(0xFF73AEF5),
-    Color(0xFF61A4F1),
-    Color(0xFF4781E0),
-    Color(0xFF398AE5),
+          Color(0xFF00897B),
+          Color(0xFF00796B),
+           Color(0xFF00694C),
+          Color(0xFF004D40),
     ], stops: [0.3, 0.4, 0.7, 0.9]
     ,
     begin: Alignment.topCenter,
@@ -75,7 +75,7 @@ class _welcomescreenState extends State<welcomescreen> {
         ],
         color: Colors.white,
         backgroundColor: Colors.white,
-        buttonBackgroundColor: Colors.blue,
+        buttonBackgroundColor: const Color(0xFF00796B),
         animationCurve: Curves.easeOut,
         animationDuration: Duration(milliseconds: 600),
         letIndexChange: (index)=>true,

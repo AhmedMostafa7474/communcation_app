@@ -33,6 +33,7 @@ class _editprofileState extends State<editprofile> {
   }
   @override
   Widget build(BuildContext context) {
+   var screensize=MediaQuery.of(context).size;
     loggedinuser=auth.currentUser!;
     return StreamBuilder(
         stream: firestore.collection("Users").doc(loggedinuser.uid).snapshots(),
@@ -64,12 +65,12 @@ class _editprofileState extends State<editprofile> {
              InkWell(
                child: Center(
                  child: Container(
-                   width: 250,
-                   height: 250,
+                   width: screensize.height*0.31,
+                   height: screensize.height*0.31,
                    decoration: BoxDecoration(
                      shape: BoxShape.circle,
                      image: DecorationImage(
-                         image: NetworkImage(photo??""),
+                         image: NetworkImage(photo??"https://cdn.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png"),
                          fit: BoxFit.fill
                      ),
                    ),
@@ -79,12 +80,8 @@ class _editprofileState extends State<editprofile> {
                {
                    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
                    var img= File(image!.path);
-                   //final String path = "assets";
-                   //var fileName = basename(image!.path);
-                   //final File localImage = await img.copy('$path/$fileName');
                  var storageRef = FirebaseStorage.instance.ref(loggedinuser.uid + '/profilePicture');
-                 var task = storageRef.putFile(img);
-                // final ref = FirebaseStorage.instance.ref(loggedinuser.uid + '/profilePicture').child("profilePicture");
+                 await storageRef.putFile(img);
                  var url = await FirebaseStorage.instance.ref(loggedinuser.uid).child("/profilePicture").getDownloadURL();
                   setState(() {
                     print("Url : " + url);
@@ -104,10 +101,10 @@ class _editprofileState extends State<editprofile> {
          ),
         ),
         Padding(
-        padding: const EdgeInsets.only(top: 300),
+        padding: EdgeInsets.only(top: screensize.height*0.36),
     child: Container(
-      height: 500.0,
-    width: 500.0,
+      height: screensize.height*0.5,
+    width: screensize.height*0.5,
     decoration: BoxDecoration(
     borderRadius: BorderRadius.only(topLeft: Radius.circular(100),topRight: Radius.circular(100)),
     color: Colors.white
@@ -135,7 +132,7 @@ class _editprofileState extends State<editprofile> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text("${loggedinuser.displayName}",style: TextStyle(
-                  color: Colors.blue,
+                  color: const Color(0xFF00796B),
                   fontSize: 19.0,
                   fontWeight: FontWeight.bold
                   ,
@@ -149,7 +146,7 @@ class _editprofileState extends State<editprofile> {
                   child: Text(
                     'Edit',
                     style: TextStyle(
-                      color: Colors.blue,
+                      color: const Color(0xFF00796B),
                       decoration: TextDecoration.underline,
                       fontSize: 15,
                     ),
@@ -188,7 +185,7 @@ class _editprofileState extends State<editprofile> {
                                     height: 30,
                                     width: 60,
                                     decoration: BoxDecoration(
-                                      color:Colors.blue,
+                                      color:const Color(0xFF00796B),
                                       borderRadius:
                                       BorderRadius.circular(10),
                                       boxShadow: [
@@ -272,7 +269,7 @@ class _editprofileState extends State<editprofile> {
               children: [
                 Text(
                   "Chat Requests", style: TextStyle(
-                  color: Colors.blue,
+                  color: const Color(0xFF00796B),
                   fontSize: 19.0,
                   fontWeight: FontWeight.bold
                   ,
@@ -282,7 +279,7 @@ class _editprofileState extends State<editprofile> {
                   ,
                 ),
                 ),
-                Icon(Icons.arrow_forward_ios,color: Colors.blue,)
+                Icon(Icons.arrow_forward_ios,color: const Color(0xFF00796B),)
               ],
             ),
           ),
@@ -301,7 +298,7 @@ class _editprofileState extends State<editprofile> {
              children: [
                Text(
                     "Contact Us", style: TextStyle(
-                    color: Colors.blue,
+                    color: const Color(0xFF00796B),
                     fontSize: 19.0,
                     fontWeight: FontWeight.bold
                     ,
@@ -311,7 +308,7 @@ class _editprofileState extends State<editprofile> {
                     ,
                   ),
                   ),
-               Icon(Icons.arrow_forward_ios,color: Colors.blue,)
+               Icon(Icons.arrow_forward_ios,color: const Color(0xFF00796B),)
              ],
            ),
          )
@@ -340,7 +337,7 @@ class _editprofileState extends State<editprofile> {
             )
                 ,style: TextButton.styleFrom(
                     primary: Colors.red
-                        ,backgroundColor: Colors.blue
+                        ,backgroundColor: const Color(0xFF00796B)
                     ,
                 )
             ),

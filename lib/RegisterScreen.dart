@@ -60,6 +60,7 @@ class _registerscreenState extends State<registerscreen> {
 
   @override
   Widget build(BuildContext context) {
+    var screensize=MediaQuery.of(context).size;
     pr=new ProgressDialog(context);
     return Scaffold(
       body: Stack(
@@ -68,12 +69,12 @@ class _registerscreenState extends State<registerscreen> {
             height: double.infinity,
             width: double.infinity,
             decoration: BoxDecoration(
-                color: Colors.blue
+                color: const Color(0xFF00796B)
             ),
 
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 100.0),
+            padding:  EdgeInsets.only(top: screensize.height*0.1),
             child: Container(
               alignment: Alignment.topLeft,
               child:  IconButton(
@@ -84,7 +85,7 @@ class _registerscreenState extends State<registerscreen> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 166),
+            padding:  EdgeInsets.only(top: screensize.height*0.2),
             child: Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(100),topRight: Radius.circular(100)),
@@ -104,7 +105,7 @@ class _registerscreenState extends State<registerscreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
 
-                          Text("Signup ", style: TextStyle(
+                          Text("Sign up ", style: TextStyle(
                               fontSize: 30.0,
                               fontWeight: FontWeight.bold
                               ,
@@ -112,7 +113,7 @@ class _registerscreenState extends State<registerscreen> {
                               ,
                               letterSpacing: 1.5
                               ,
-                              color: Colors.blue)),
+                              color: const Color(0xFF00796B))),
                       Name(),
                       Username(),
                       EmailBox(),
@@ -157,7 +158,7 @@ Column Name() {
           decoration: InputDecoration(
             border: InputBorder.none,
             contentPadding: EdgeInsets.only(top: 14.0),
-            prefixIcon: Icon(Icons.supervised_user_circle, color: Colors.blue
+            prefixIcon: Icon(Icons.supervised_user_circle, color: const Color(0xFF00796B)
             ),
             hintText: "Enter your Fullname",
           ),
@@ -195,7 +196,7 @@ Column Username() {
           decoration: InputDecoration(
             border: InputBorder.none,
             contentPadding: EdgeInsets.only(top: 14.0),
-            prefixIcon: Icon(Icons.verified_user, color: Colors.blue
+            prefixIcon: Icon(Icons.verified_user, color: const Color(0xFF00796B)
             ),
             hintText: "Enter your Username",
           ),
@@ -233,7 +234,7 @@ Column EmailBox() {
           decoration: InputDecoration(
             border: InputBorder.none,
             contentPadding: EdgeInsets.only(top: 14.0),
-            prefixIcon: Icon(Icons.email, color: Colors.blue
+            prefixIcon: Icon(Icons.email, color: const Color(0xFF00796B)
             ),
             hintText: "Enter your email address",
           ),
@@ -272,7 +273,7 @@ Column PassBox() {
           decoration: InputDecoration(
             border: InputBorder.none,
             contentPadding: EdgeInsets.only(top: 14.0),
-            prefixIcon: Icon(Icons.lock, color: Colors.blue
+            prefixIcon: Icon(Icons.lock, color: const Color(0xFF00796B)
             ),
             hintText: "Enter your Password",
           ),
@@ -291,7 +292,7 @@ Column PassBox() {
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30.0)
         ),
-        color: Colors.blue
+        color: const Color(0xFF00796B)
         ,
         onPressed: () async {
           setState(() {
@@ -346,7 +347,7 @@ Column PassBox() {
             }
           }
         },
-        child: Text("Signup", style: TextStyle(
+        child: Text("Sign up", style: TextStyle(
             fontSize: 18.0,
             fontWeight: FontWeight.bold
             ,
@@ -354,7 +355,7 @@ Column PassBox() {
             ,
             letterSpacing: 1.5
             ,
-            color: Colors.black)),),
+            color: Colors.white)),),
     );
   }
 

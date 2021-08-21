@@ -12,14 +12,22 @@ import 'WelcomeScreen.dart';
 
 
 class friendsSearch extends StatefulWidget {
-  List<String>ids;
-  friendsSearch(this.ids);
+  List<String>idds;
+  friendsSearch(this.idds);
 
   @override
-  _friendsSearchState createState() => _friendsSearchState(ids);
+  _friendsSearchState createState() => _friendsSearchState();
 }
 
 class _friendsSearchState extends State<friendsSearch> {
+  Future Ids()async
+  {
+    SharedPreferences s =await SharedPreferences.getInstance();
+   setState(() {
+     idscon=s.getStringList("Idsconv")!;
+     idsreq=s.getStringList("IdsRequest")!;
+   });
+  }
   Future alertDialog(String text, BuildContext context) {
     return showDialog(
         context: context,
@@ -43,9 +51,9 @@ class _friendsSearchState extends State<friendsSearch> {
   late User loggedinuser;
   late ProgressDialog pr;
  static var docc=false;
-  List<String> ids;
-  _friendsSearchState(this.ids);
-
+  late List<String> idscon;
+  List<String> idsreq=[];
+int n=0;
   @override
   Widget build(BuildContext context) {
     loggedinuser=auth.currentUser!;
@@ -54,6 +62,10 @@ class _friendsSearchState extends State<friendsSearch> {
         .size
         .width;
     pr = new ProgressDialog(context);
+    while(n==0) {
+      Ids();
+      n++;
+    }
     return StreamBuilder(
       stream: firestore.collection("Users").snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -68,6 +80,7 @@ class _friendsSearchState extends State<friendsSearch> {
         else {
           final users = snapshot.data!.docs;
           List<Conversmodel>Coverstions = [];
+          List<String> IDDs=[];
           for (var user in users) {
             bool flag=true;
             final String id=user["id"];
@@ -75,20 +88,21 @@ class _friendsSearchState extends State<friendsSearch> {
             final String name = user["name"];
             final String about = "pp";
             var C = Conversmodel(PhotoUrl, name, id, about);
-            if(user["id"]!=loggedinuser.uid&&!ids.contains(user["id"])) {
+            if(user["id"]!=loggedinuser.uid&&!idscon.contains(user["id"])&&!idsreq.contains(user["id"])) {
               Coverstions.add(C);
+              IDDs.add(id);
             }
           }
           return Scaffold(
             appBar: AppBar(
-              backgroundColor:Color(0xFF73AEF5),
+              backgroundColor:const Color(0xFF00796B),
               title: Text("Search Friends"),
               leading: Icon(Icons.search),
               titleSpacing: 2.0,
             ),
             backgroundColor: Colors.white,
             floatingActionButton: FloatingActionButton(
-              child: Icon(Icons.home ,color: Colors.blue,),
+              child: Icon(Icons.home ,color: const Color(0xFF00796B),),
               backgroundColor: Colors.white,
               onPressed: () {
                 setState(() {
@@ -96,7 +110,39 @@ class _friendsSearchState extends State<friendsSearch> {
                 });
               },
             ),
-            body: GridView.builder(
+            body: Stack(
+              children: <Widget>[
+            Container(
+            height: double.infinity,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(colors: [
+                    Color(0xFF00897B),
+                    Color(0xFF00796B),
+                    Color(0xFF00694C),
+                    Color(0xFF004D40),
+                  ], stops: [0.3, 0.4, 0.7, 0.9]
+                    ,
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  )
+              ),
+            ),  IDDs.isEmpty?Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      alignment: Alignment.bottomCenter,
+                      height:500,
+                      width: 500,
+                      child: Column(
+                        children: [
+                          Icon(Icons.person_add_sharp,size: 130,color: Colors.white,),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          Text("No Suggestions Available",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,fontSize: 21),),
+                        ],
+                      ),
+                    ) ): GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 1,
                   mainAxisSpacing: 0.9,
@@ -105,6 +151,8 @@ class _friendsSearchState extends State<friendsSearch> {
               , itemBuilder: (context, index) =>
                 GestureDetector(
                     child: Card(context, Coverstions[index])),
+            )
+            ]
             ),
           );
         }
@@ -142,7 +190,7 @@ class _friendsSearchState extends State<friendsSearch> {
                 SizedBox(width: 12.0,),
                 Text("${product1.Username}", style: TextStyle(
                     fontSize: 23,
-                    color: Colors.black,
+                    color: Colors.white,
                     fontStyle: FontStyle.italic,
                     fontWeight: FontWeight.w600,
                     fontFamily: 'Segoe UI'
@@ -160,10 +208,12 @@ class _friendsSearchState extends State<friendsSearch> {
                   }
               );
               await alertDialog("Request is Sent !", context);
+              SharedPreferences s=await SharedPreferences.getInstance();
               setState(() {
-               // _isButtonDisabled=true;
-                ids.add(product1.id);
+                idsreq.add(product1.id);
+                s.setStringList("IdsRequest", idsreq);
               });
+
 
             }
             ,

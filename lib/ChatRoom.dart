@@ -10,7 +10,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'dart:io';
-
+import 'package:auto_size_text/auto_size_text.dart';
 import 'WelcomeScreen.dart';
 class chatroom extends StatefulWidget {
   Conversmodel product;
@@ -58,7 +58,7 @@ class _chatroomState extends State<chatroom> {
             final messeges = snapshot.data!.docs;
             return Scaffold(
               appBar: AppBar(
-                backgroundColor: Color(0xFF73AEF5),
+                backgroundColor: const Color(0xFF00796B),
                 title: Row(
                   children: [
                     CircleAvatar(
@@ -70,39 +70,71 @@ class _chatroomState extends State<chatroom> {
                         fontSize: 16, fontWeight: FontWeight.w600)),
                   ],
                 ),
-                leading: IconButton(onPressed: () {
+                leading: IconButton(onPressed: () async {
+                  await firestore.collection("Users").doc(loggedinuser.uid).collection("Converstions").doc(product.id).collection("Messages").doc(messeges[messeges.length-1].id).update(
+                    {
+                      "seen":"true"
+                    }
+                  );
                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> welcomescreen()));
                 }, icon: Icon(Icons.arrow_back)),
                 titleSpacing: 2.0,
               ),
               body: Stack(
                 children: [
-                  ListView.builder(
-                      itemCount:messeges.length,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          padding: EdgeInsets.only(
-                              left: 14, right: 14, top: 10, bottom: 14),
-                          child: Align(
-                            alignment:messeges[index]["messageType"] == "receiver"?Alignment.topLeft:Alignment.topRight,
-                            child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20.0),
-                                    color:messeges[index]["messageType"]  == "receiver"?Colors.grey.shade200:Colors.blue[200]
-                                ),
-                                padding: EdgeInsets.all(16.0),
-                                child:messeges[index]["type"]  == "img"? Container(
-                                  height:250 ,
-                                  width:250 ,
-                                  child: Image(image: NetworkImage(
-                                      messeges[index]["messageContent"]),
-                                    fit: BoxFit.cover,
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 60.0),
+                    child: ListView.builder(
+                        itemCount:messeges.length,
+                        physics: AlwaysScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return Container(
+                            padding: EdgeInsets.only(
+                                left: 14, right: 14, top: 10, bottom: 14),
+                            child: Align(
+                              alignment:messeges[index]["messageType"] == "receiver"?Alignment.topLeft:Alignment.topRight,
+                              child: Row(
+                                mainAxisAlignment:messeges[index]["messageType"] == "receiver"?MainAxisAlignment.start:MainAxisAlignment.end,
+                                children: [
+                                  messeges[index]["messageType"] == "receiver"?  CircleAvatar(
+                                    backgroundImage: NetworkImage(product.imgUrl),
+                                    maxRadius: 20.0,
+                                  ):SizedBox(width: 0.0,),
+                                  SizedBox(width: 2.0,),
+                                  Row(
+                                    children: [
+                                      Container(
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(20.0),
+                                              color:messeges[index]["type"]  == "img"?Colors.transparent:messeges[index]["messageType"]  == "receiver"?Colors.grey.shade200:const Color(0xFF00796B)
+                                          ),
+                                          padding: EdgeInsets.all(16.0),
+                                          child:messeges[index]["type"]  == "img"? Container(
+                                            height:250 ,
+                                            width:250 ,
+                                            child: Image(image: NetworkImage(
+                                                messeges[index]["messageContent"]),
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ):
+                                              Container(
+                                                child: AutoSizeText(messeges[index]["messageContent"],
+                                                              style: TextStyle(fontSize: 15,
+                                                              color: messeges[index]["messageType"]  == "receiver"?Colors.black:Colors.white
+                                                              ,),
+                                                           maxLines: 20,
+                                                           overflow: TextOverflow.ellipsis,
+                                                        ),
+                                              ),
+                            ),
+                                    ],
                                   ),
-                                ):Text(messeges[index]["messageContent"],
-                                    style: TextStyle(fontSize: 15))
-                          ),
-                        ),);
-                      }),
+                                ],
+                              ),
+                          ),);
+                        }),
+                  ),
+
                   Align(
                     alignment: Alignment.bottomLeft,
                     child: Container(
@@ -131,36 +163,40 @@ class _chatroomState extends State<chatroom> {
                               await firestore.collection("Users").doc(loggedinuser.uid).collection("Converstions").doc(product.id).collection("Messages").doc(DateTime.now().toString()).set(
                                   {
                                     "messageContent": url.toString(),
-                                    "messageType" :"receiver",
+                                    "messageType" :"sender",
                                     "time":DateTime.now(),
-                                    "type":"img"
+                                    "type":"img",
+                                    "seen": "false"
                                   }
                               );
                               await firestore.collection("Users").doc(product.id).collection("Converstions").doc(loggedinuser.uid).collection("Messages").doc(DateTime.now().toString()).set(
                                   {
                                     "messageContent": url.toString(),
-                                    "messageType" :"sender",
+                                    "messageType" :"receiver",
                                     "time":DateTime.now(),
-                                    "type":"img"
+                                    "type":"img",
+                                    "seen": "false"
                                   }
                               );
-
                             },
                             child: Container(
                               decoration: BoxDecoration(
-                                color: Colors.lightBlue,
+                                color: const Color(0xFF00796B),
                                 borderRadius: BorderRadius.circular(30),
                               ),
                               height: 30,
                               width: 30,
                               child: Icon(
                                   Icons.add
+                                      ,color: Colors.white,
                               ),
                             ),
                           ),
                           SizedBox(width: 15,),
                           Expanded(
                             child: TextField(
+                              keyboardType: TextInputType.multiline,
+                              maxLines: 20,
                               controller: Message,
                               decoration: InputDecoration(
                                   hintText: "Write message...",
@@ -175,24 +211,26 @@ class _chatroomState extends State<chatroom> {
                               firestore.collection("Users").doc(loggedinuser.uid).collection("Converstions").doc(product.id).collection("Messages").doc(DateTime.now().toString()).set(
                                   {
                                     "messageContent": Message.text,
-                                    "messageType" :"receiver",
+                                    "messageType" :"sender",
                                     "time":DateTime.now(),
-                                    "type":""
+                                    "type":"text",
+                                   "seen": "false"
                                   }
                               );
                               firestore.collection("Users").doc(product.id).collection("Converstions").doc(loggedinuser.uid).collection("Messages").doc(DateTime.now().toString()).set(
                                   {
                                     "messageContent": Message.text,
-                                    "messageType" :"sender",
+                                    "messageType" :"receiver",
                                     "time":DateTime.now(),
-                                    "type":""
+                                    "type":"text",
+                                    "seen": "false"
                                   }
                               );
                               Message.clear();
                             },
                             child: Icon(Icons.send, color: Colors.white,
                               size: 18,),
-                            backgroundColor: Colors.blue,
+                            backgroundColor: const Color(0xFF00796B),
                             elevation: 0,
                           ),
                         ],
