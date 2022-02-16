@@ -2,9 +2,12 @@ import 'package:communcation_app/Drawer.dart';
 import 'package:communcation_app/EditProfile1.dart';
 import 'package:communcation_app/HomeScreen1.dart';
 import 'package:communcation_app/Settings.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+
+import 'main.dart';
 
 class welcomescreen extends StatefulWidget {
   @override
@@ -31,6 +34,13 @@ class _welcomescreenState extends State<welcomescreen> {
   Icon(Icons.home,),
   Icon(Icons.settings,),
   ];
+ @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+      //active app listiner.
+      super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     currentpage=Pages[_page];

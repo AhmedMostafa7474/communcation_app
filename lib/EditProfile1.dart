@@ -12,7 +12,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 
 import 'LoginScreen1.dart';
-
 class editprofile extends StatefulWidget {
   @override
   _editprofileState createState() => _editprofileState();
@@ -88,12 +87,12 @@ class _editprofileState extends State<editprofile> {
                   });
                    await loggedinuser.updatePhotoURL(url);
                    setState(() {
-                     photo=loggedinuser.photoURL;
+                     photo=url;
                    });
                    await firestore.collection('Users')
                        .doc(loggedinuser.uid)
                        .update({
-                     'PhotoUrl': loggedinuser.photoURL,
+                     'PhotoUrl': url,
                    });
                },
              )

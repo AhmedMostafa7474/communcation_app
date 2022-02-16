@@ -1,4 +1,7 @@
-import 'package:communcation_app/PushNotifcation.dart';
+
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -26,7 +29,8 @@ class _chatroomState extends State<chatroom> {
   String notificationAlert = "alert";
 
   final ImagePicker _picker = ImagePicker();
-
+  var FcmUrl = 'https://fcm.googleapis.com/fcm/send';
+  var FcmKey="AAAArLp9z98:APA91bFwDk2pmd6Fs0lUtoxfAKqC7OyY329ZqgTVKCxKWx_hYutJUel47neNtMKGjnJWU5Ro8znfCsl1Y3u7O0wmv9QXIgjVqI-yj2e_ftDVsbG9tU7wlKqhD6wx-x77C-hTKsE8vWe8";
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   Conversmodel product;
   var Message=TextEditingController();
@@ -35,6 +39,21 @@ class _chatroomState extends State<chatroom> {
   final firestore = FirebaseFirestore.instance;
   late User loggedinuser;
   late ProgressDialog pr;
+  String? Token;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    load();
+
+  }
+  void load()async
+  {
+    _firebaseMessaging.subscribeToTopic('all');
+    final data= await firestore.collection("Users").doc(product.id).get();
+    print("data2" +data.data()!["Token"]);
+    Token=data.get("Token");
+}
   @override
   Widget build(BuildContext context) {
     loggedinuser=auth.currentUser!;
@@ -76,7 +95,7 @@ class _chatroomState extends State<chatroom> {
                       "seen":"true"
                     }
                   );
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> welcomescreen()));
+                  Navigator.pop(context);
                 }, icon: Icon(Icons.arrow_back)),
                 titleSpacing: 2.0,
               ),
@@ -150,12 +169,8 @@ class _chatroomState extends State<chatroom> {
                               final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
                               var img= File(image!.path);
                               String  time=DateTime.now().toString();
-                              //final String path = "assets";
-                              //var fileName = basename(image!.path);
-                              //final File localImage = await img.copy('$path/$fileName');
                               var storageRef = await FirebaseStorage.instance.ref(loggedinuser.uid +time+ '/Messages');
                               var task = await storageRef.putFile(img);
-                              // final ref = FirebaseStorage.instance.ref(loggedinuser.uid + '/profilePicture').child("profilePicture");
                               var url = await FirebaseStorage.instance.ref(loggedinuser.uid+time).child("/Messages").getDownloadURL();
                               setState(() {
                                 print("Url : " + url);
@@ -178,6 +193,17 @@ class _chatroomState extends State<chatroom> {
                                     "seen": "false"
                                   }
                               );
+                              var response = await http.post(Uri.parse(FcmUrl),
+                                  body: jsonEncode({
+                                    "to": Token,
+                                    "priority": "high",
+                                    "notification": {"title": "${loggedinuser.displayName}", "body": "Message : Sent a Photo"}
+                                  }),
+                                  headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': 'key=$FcmKey'
+                                  });
+                              print(response.statusCode);
                             },
                             child: Container(
                               decoration: BoxDecoration(
@@ -207,7 +233,7 @@ class _chatroomState extends State<chatroom> {
                           ),
                           SizedBox(width: 15,),
                           FloatingActionButton(
-                            onPressed: () {
+                            onPressed: () async {
                               firestore.collection("Users").doc(loggedinuser.uid).collection("Converstions").doc(product.id).collection("Messages").doc(DateTime.now().toString()).set(
                                   {
                                     "messageContent": Message.text,
@@ -226,6 +252,22 @@ class _chatroomState extends State<chatroom> {
                                     "seen": "false"
                                   }
                               );
+
+                              var response = await http.post(Uri.parse(FcmUrl),
+                                  body: jsonEncode({
+                                    "to": Token,
+                                    "priority": "high",
+                                    "notification": {"title": "${loggedinuser.displayName}", "body":" Message : ${Message.text}"}
+                                  }),
+                                  headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': 'key=$FcmKey'
+                                  });
+                              if (response.statusCode == 200) {
+                              } else {
+                                print(Token);
+                                print(response.reasonPhrase);
+                              }
                               Message.clear();
                             },
                             child: Icon(Icons.send, color: Colors.white,

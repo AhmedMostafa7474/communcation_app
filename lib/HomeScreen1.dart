@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'FriendsSearch.dart';
 import 'WelcomeScreen.dart';
+import 'main.dart';
 
 
 class homescreen extends StatefulWidget {
@@ -30,6 +31,11 @@ class _homescreenState extends State<homescreen> {
     setState(() {
       s.setStringList("Idsconv", t);
     });
+  }
+  @override
+  void initState() {
+    //active app listiner.
+    super.initState();
   }
   @override
   Widget build(BuildContext context) {
@@ -115,10 +121,9 @@ class _homescreenState extends State<homescreen> {
 
   InkWell Card(BuildContext context, products) {
     final Conversmodel product1 = products;
-    //var Mobwidth = MediaQuery.of(context).size.width;
     return InkWell(
       onTap: (){
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>chatroom(product1)));
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>chatroom(product1)));
       },
       child:StreamBuilder(
         stream: firestore.collection("Users").doc(loggedinuser.uid).collection("Converstions").doc(product1.id).collection("Messages").snapshots(),
@@ -163,7 +168,7 @@ class _homescreenState extends State<homescreen> {
           SizedBox(height: 5.0,),
           messeges.isNotEmpty?Text(((lastMessage["messageType"] == "receiver"?product1.Username+": ":"You: ")+(lastMessage["type"]=="img"?"Sent a photo":lastMessage["messageContent"]))??"", style: TextStyle(
           fontSize: 14,
-          color:lastMessage["seen"]=="true"? Colors.grey:Colors.blue,
+          color:lastMessage["seen"]=="false"&&lastMessage["messageType"] == "receiver"? Colors.blue: Colors.grey,
           fontStyle: FontStyle.italic,
           fontWeight: FontWeight.w500,
           fontFamily: 'Segoe UI' ,

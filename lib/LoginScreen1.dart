@@ -3,6 +3,7 @@ import 'package:communcation_app/RegisterScreen.dart';
 import 'package:communcation_app/Userstatus.dart';
 import 'package:communcation_app/WelcomeScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -135,6 +136,11 @@ class _loginScreenState extends State<loginScreen> {
             if(newuser!=null)
             {
               loginStatues().writeStatus(true);
+               firestore.collection("Users").doc(newuser.user!.uid).update(
+              {
+              "Token": await FirebaseMessaging.instance.getToken()
+              }
+              );
               Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> welcomescreen()));
             }
           }catch(e)
